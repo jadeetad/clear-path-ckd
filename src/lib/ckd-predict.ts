@@ -41,31 +41,34 @@ export async function predict(values: FormValues): Promise<PredictionResult> {
   const p = toModelPayload(values) as Record<string, number | string>;
   await new Promise((r) => setTimeout(r, 900));
 
+  const num = (k: string) => Number(p[k]);
+  const cat = (k: string) => String(p[k] ?? "");
+
   let score = 0;
-  const egfr = Number(p.egfr);
+  const egfr = num("egfr");
   if (egfr < 15) score += 5;
   else if (egfr < 30) score += 4;
   else if (egfr < 45) score += 3;
   else if (egfr < 60) score += 2;
   else if (egfr < 90) score += 1;
 
-  const creat = Number(p.serum_creatinine);
+  const creat = num("serum_creatinine");
   if (creat > 5) score += 3;
   else if (creat > 2) score += 2;
   else if (creat > 1.3) score += 1;
 
-  if (Number(p.blood_urea) > 80) score += 2;
-  else if (Number(p.blood_urea) > 45) score += 1;
+  if (num("blood_urea") > 80) score += 2;
+  else if (num("blood_urea") > 45) score += 1;
 
-  if (Number(p.urine_protein_creatinine_ratio) > 1) score += 2;
-  else if (Number(p.urine_protein_creatinine_ratio) > 0.3) score += 1;
+  if (num("urine_protein_creatinine_ratio") > 1) score += 2;
+  else if (num("urine_protein_creatinine_ratio") > 0.3) score += 1;
 
-  if (Number(p.hemoglobin) < 10) score += 1;
-  if (Number(p.albumin_in_urine) >= 3) score += 1;
-  if (p.hypertension === "yes") score += 1;
-  if (p.diabetes_mellitus === "yes") score += 1;
-  if (p.pedal_edema === "yes") score += 1;
-  if (p.anemia === "yes") score += 1;
+  if (num("hemoglobin") < 10) score += 1;
+  if (num("albumin_in_urine") >= 3) score += 1;
+  if (cat("hypertension") === "yes") score += 1;
+  if (cat("diabetes_mellitus") === "yes") score += 1;
+  if (cat("pedal_edema") === "yes") score += 1;
+  if (cat("anemia") === "yes") score += 1;
 
   let index: number;
   if (score <= 1) index = 0;
@@ -74,7 +77,7 @@ export async function predict(values: FormValues): Promise<PredictionResult> {
   else if (score <= 11) index = 3;
   else index = 4;
 
-  const prediction = RISK_CLASSES[index];
+  const prediction = RISK_CLASSES[index] as RiskClass;
   return {
     prediction,
     index,
