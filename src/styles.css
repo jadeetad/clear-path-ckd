@@ -168,3 +168,26 @@
 
   }
 }
+
+@layer base {
+  .font-display {
+    font-family: var(--font-display);
+    font-optical-sizing: auto;
+  }
+}
+
+@keyframes float-a {
+  from { transform: translate(0, 0); }
+  to { transform: translate(24px, -30px); }
+}
+@keyframes float-b {
+  from { transform: translate(0, 0); }
+  to { transform: translate(-30px, 26px); }
+}
+@keyframes float-c {
+  from { transform: translate(0, 0); }
+  to { transform: translate(18px, 18px); }
+}
+@utility anim-a { animation: float-a 14s ease-in-out infinite alternate; }
+@utility anim-b { animation: float-b 17s ease-in-out infinite alternate; }
+@utility anim-c { animation: float-c 12s ease-in-out infinite alternate; }
