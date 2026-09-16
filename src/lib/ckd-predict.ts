@@ -30,54 +30,39 @@ const EXPLANATIONS: Record<RiskClass, string> = {
     "The profile is consistent with advanced kidney impairment. Urgent specialist evaluation is advised.",
 };
 
+// Base URL of the Flask API. Set VITE_API_URL in a .env file for production;
+// falls back to a local Flask dev server for local testing.
+const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:5000";
+
 /**
- * Placeholder classifier.
- *
- * This is a transparent rule-based stand-in so the interface can be used end to
- * end before the trained Random Forest is served. Swap the body of `predict`
- * for a POST to the Python API — the payload shape is already correct.
+ * Calls the real trained Random Forest model, served by the Flask backend.
+ * The payload shape (frontend field keys -> number/string) is already
+ * correct — the backend maps these keys to the model's actual training
+ * column names and encodings.
  */
 export async function predict(values: FormValues): Promise<PredictionResult> {
-  const p = toModelPayload(values) as Record<string, number | string>;
-  await new Promise((r) => setTimeout(r, 900));
+  const payload = toModelPayload(values);
 
-  const num = (k: string) => Number(p[k]);
-  const cat = (k: string) => String(p[k] ?? "");
+  const response = await fetch(`${API_URL}/predict`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
 
-  let score = 0;
-  const egfr = num("egfr");
-  if (egfr < 15) score += 5;
-  else if (egfr < 30) score += 4;
-  else if (egfr < 45) score += 3;
-  else if (egfr < 60) score += 2;
-  else if (egfr < 90) score += 1;
+  if (!response.ok) {
+    throw new Error(`Prediction request failed with status ${response.status}`);
+  }
 
-  const creat = num("serum_creatinine");
-  if (creat > 5) score += 3;
-  else if (creat > 2) score += 2;
-  else if (creat > 1.3) score += 1;
+  const data = await response.json();
+  // Expected response shape: { prediction: "Moderate_Risk" }
+  const raw = String(data.prediction ?? "");
+  const prediction = raw.replace(/_/g, " ") as RiskClass;
+  const index = RISK_CLASSES.indexOf(prediction);
 
-  if (num("blood_urea") > 80) score += 2;
-  else if (num("blood_urea") > 45) score += 1;
+  if (index === -1) {
+    throw new Error(`Unrecognized prediction class from backend: "${raw}"`);
+  }
 
-  if (num("urine_protein_creatinine_ratio") > 1) score += 2;
-  else if (num("urine_protein_creatinine_ratio") > 0.3) score += 1;
-
-  if (num("hemoglobin") < 10) score += 1;
-  if (num("albumin_in_urine") >= 3) score += 1;
-  if (cat("hypertension") === "yes") score += 1;
-  if (cat("diabetes_mellitus") === "yes") score += 1;
-  if (cat("pedal_edema") === "yes") score += 1;
-  if (cat("anemia") === "yes") score += 1;
-
-  let index: number;
-  if (score <= 1) index = 0;
-  else if (score <= 4) index = 1;
-  else if (score <= 7) index = 2;
-  else if (score <= 11) index = 3;
-  else index = 4;
-
-  const prediction = RISK_CLASSES[index] as RiskClass;
   return {
     prediction,
     index,
