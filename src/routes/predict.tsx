@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { Save } from "lucide-react";
 import { SiteShell, Disclaimer } from "@/components/site-shell";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   FIELDS,
   SECTIONS,
@@ -42,7 +44,10 @@ const RISK_TEXT = [
 ];
 
 const inputClass =
-  "mt-1.5 w-full rounded-xl border-0 bg-surface/80 px-4 py-2.5 text-sm text-ink shadow-inner ring-1 ring-line placeholder:text-ink/30 focus:ring-2 focus:ring-brand focus:outline-none";
+  "mt-1.5 w-full rounded-lg border-0 bg-white px-4 py-2.5 text-sm text-ink shadow-none ring-1 ring-line placeholder:text-ink/30 focus:ring-2 focus:ring-brand focus:outline-none";
+
+const selectTriggerClass =
+  "mt-1.5 h-auto w-full justify-between rounded-lg border-0 bg-white px-4 py-2.5 text-sm text-ink shadow-none ring-1 ring-line focus:ring-2 focus:ring-brand focus:outline-none data-[placeholder]:text-ink/40";
 
 function Field({
   field,
@@ -52,7 +57,7 @@ function Field({
 }: {
   field: CkdField;
   value: string;
-  error?: string;
+  error?: string | undefined;
   onChange: (v: string) => void;
 }) {
   const describedBy = error ? `${field.key}-error` : undefined;
@@ -97,21 +102,27 @@ function Field({
           ))}
         </div>
       ) : (
-        <select
-          id={field.key}
-          value={value}
-          aria-invalid={!!error}
-          aria-describedby={describedBy}
-          onChange={(e) => onChange(e.target.value)}
-          className={`${inputClass} ${error ? "ring-2 ring-destructive" : ""}`}
+        <Select
+          {...(value ? { value } : {})}
+          onValueChange={(v) => onChange(v)}
         >
-          <option value="">Select…</option>
-          {field.options.map((o) => (
-            <option key={o.value} value={o.value}>
-              {o.label}
-            </option>
-          ))}
-        </select>
+
+          <SelectTrigger
+            id={field.key}
+            aria-invalid={!!error}
+            aria-describedby={describedBy}
+            className={`${selectTriggerClass} ${error ? "ring-2 ring-destructive" : ""}`}
+          >
+            <SelectValue placeholder="Select…" />
+          </SelectTrigger>
+          <SelectContent>
+            {field.options.map((o) => (
+              <SelectItem key={o.value} value={o.value}>
+                {o.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       )}
 
       {error ? (
@@ -131,16 +142,16 @@ function ResultCard({
   onReset: () => void;
 }) {
   return (
-    <div className="rounded-3xl bg-card/55 p-6 shadow-[0_30px_80px_-20px_oklch(0.376_0.058_204.6/0.45)] ring-1 ring-card/60 backdrop-blur-2xl">
+    <div className="rounded-xl bg-card/55 p-6 shadow-[0_20px_50px_-20px_oklch(0.4_0.09_258/0.4)] ring-1 ring-line">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <span className="text-xs font-semibold uppercase tracking-[0.15em] text-ink/45">
           Prediction Result
         </span>
-        <span className="rounded-full bg-card/70 px-3 py-1 text-[11px] font-medium text-ink/50 ring-1 ring-card/60">
+        <span className="rounded-md bg-card/70 px-3 py-1 text-[11px] font-medium text-ink/50 ring-1 ring-line">
           {result.timestamp}
         </span>
       </div>
-      <div className="mt-5 rounded-2xl bg-gradient-to-br from-brand/10 to-accent/10 p-6 ring-1 ring-card/50">
+      <div className="mt-5 rounded-lg bg-gradient-to-br from-brand/10 to-accent/10 p-6 ring-1 ring-line">
         <p className="text-xs font-medium uppercase tracking-[0.15em] text-ink/50">
           Predicted Risk Category
         </p>
@@ -165,7 +176,7 @@ function ResultCard({
       <button
         type="button"
         onClick={onReset}
-        className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-card px-5 py-3 text-sm font-semibold text-brand-deep ring-1 ring-brand/20 transition hover:bg-brand/5"
+        className="mt-5 flex w-full items-center justify-center gap-2 rounded-lg bg-card px-5 py-3 text-sm font-semibold text-brand-deep ring-1 ring-brand/20 transition hover:bg-brand/5"
       >
         New Prediction
       </button>
@@ -232,29 +243,28 @@ function Predict() {
             <ResultCard result={result} onReset={resetForm} />
           </div>
         ) : (
-          <div className="rounded-3xl bg-card/50 p-6 shadow-[0_20px_60px_-24px_oklch(0.376_0.058_204.6/0.4)] ring-1 ring-card/60 backdrop-blur-2xl sm:p-8">
+          <div className="rounded-xl bg-card/50 p-6 shadow-[0_16px_40px_-24px_oklch(0.4_0.09_258/0.35)] ring-1 ring-line sm:p-8">
             <div className="flex flex-wrap items-end justify-between gap-3">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.15em] text-ink/45">
-                  Prediction Form
+                <h1 className="font-display text-2xl font-semibold tracking-tight">Patient Data</h1>
+                <p className="mt-1.5 inline-flex items-center gap-2 text-sm text-ink/55">
+                  <Save className="size-4 text-brand" aria-hidden />
+                  Feel free to save and continue later.
                 </p>
-                <h1 className="font-display mt-1 text-2xl font-semibold tracking-tight">
-                  Patient data, grouped &amp; validated
-                </h1>
               </div>
-              <span className="rounded-full bg-brand/10 px-3 py-1 text-xs font-semibold text-brand-deep">
+              <span className="rounded-md bg-brand/10 px-3 py-1 text-xs font-semibold text-brand-deep">
                 {FIELD_COUNT} model inputs
               </span>
             </div>
 
             {errorCount > 0 ? (
-              <p className="mt-4 rounded-xl bg-destructive/10 px-4 py-3 text-sm font-medium text-destructive ring-1 ring-destructive/20">
+              <p className="mt-4 rounded-lg bg-destructive/10 px-4 py-3 text-sm font-medium text-destructive ring-1 ring-destructive/20">
                 {errorCount} field{errorCount > 1 ? "s need" : " needs"} attention before the
                 prediction can run.
               </p>
             ) : null}
             {failed ? (
-              <p className="mt-4 rounded-xl bg-destructive/10 px-4 py-3 text-sm font-medium text-destructive ring-1 ring-destructive/20">
+              <p className="mt-4 rounded-lg bg-destructive/10 px-4 py-3 text-sm font-medium text-destructive ring-1 ring-destructive/20">
                 {failed}
               </p>
             ) : null}
@@ -264,7 +274,7 @@ function Predict() {
                 {SECTIONS.map((section) => (
                   <div
                     key={section.id}
-                    className="rounded-2xl bg-card/60 p-5 ring-1 ring-card/60"
+                    className="rounded-lg bg-card/60 p-5 ring-1 ring-line"
                   >
                     <p className="text-xs font-semibold uppercase tracking-[0.12em] text-brand-deep">
                       {section.title}
@@ -289,7 +299,7 @@ function Predict() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-semibold text-primary-foreground shadow-[0_12px_30px_oklch(0.503_0.077_202.5/0.35)] transition hover:bg-brand-deep disabled:opacity-70"
+                  className="inline-flex items-center gap-2 rounded-lg bg-brand px-6 py-3 text-sm font-semibold text-primary-foreground shadow-[0_8px_22px_oklch(0.52_0.115_252/0.35)] transition hover:bg-brand-deep disabled:opacity-70"
                 >
                   {loading ? (
                     <>
@@ -303,7 +313,7 @@ function Predict() {
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="inline-flex items-center gap-2 rounded-full bg-card/60 px-5 py-3 text-sm font-semibold text-ink ring-1 ring-line transition hover:bg-card/80"
+                  className="inline-flex items-center gap-2 rounded-lg bg-card/60 px-5 py-3 text-sm font-semibold text-ink ring-1 ring-line transition hover:bg-card/80"
                 >
                   Reset form
                 </button>

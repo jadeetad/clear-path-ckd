@@ -43,7 +43,7 @@ function Index() {
             <div className="mt-7 flex flex-wrap items-center gap-3">
               <Link
                 to="/predict"
-                className="group inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-semibold text-primary-foreground shadow-[0_12px_30px_oklch(0.503_0.077_202.5/0.35)] transition hover:bg-brand-deep"
+                className="group inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-semibold text-primary-foreground shadow-[0_12px_30px_oklch(0.52_0.115_252/0.35)] transition hover:bg-brand-deep"
               >
                 Predict CKD Risk
                 <span className="transition-transform group-hover:translate-x-0.5">→</span>
@@ -59,7 +59,7 @@ function Index() {
           </div>
 
           <div className="relative">
-            <div className="rounded-3xl bg-card/55 p-6 shadow-[0_30px_80px_-20px_oklch(0.376_0.058_204.6/0.45)] ring-1 ring-card/60 backdrop-blur-2xl">
+            <div className="rounded-3xl bg-card/55 p-6 shadow-[0_30px_80px_-20px_oklch(0.4_0.09_258/0.45)] ring-1 ring-card/60 backdrop-blur-2xl">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold uppercase tracking-[0.15em] text-ink/45">
                   Example Result
