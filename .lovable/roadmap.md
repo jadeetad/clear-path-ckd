@@ -1,8 +1,8 @@
 # Roadmap
 
 - [x] CKD predictor app: landing, predict form (42 fields), about, placeholder model
-- [ ] Recolor palette to blue/green/white only (remove amber accent, white background — remove background glow blobs)
-- [ ] Boxy header typography (replace Fraunces with a geometric sans; tighter radii)
-- [ ] Prediction form header: "Patient Data" only
-- [ ] Modern dropdowns (Radix/shadcn Select instead of native select)
-- [ ] Add "Feel free to save and continue later" note in the prediction form
+- [x] Recolor palette to blue/green/white only (amber accent removed, background glow removed, pure white background)
+- [x] Boxy header typography (Fraunces → Space Grotesk; tighter radii)
+- [x] Prediction form header: "Patient Data" only
+- [x] Modern dropdowns (Radix/shadcn Select instead of native select)
+- [x] "Feel free to save and continue later" note in the prediction form (visual note only — no save functionality, per request)
