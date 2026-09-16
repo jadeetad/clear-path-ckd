@@ -61,10 +61,11 @@ const presentNotPresent = [
 ];
 
 export const FIELDS: CkdField[] = [
-  // ── Patient information (3)
+  // ── Patient information (4)
   { key: "age", label: "Age of the patient", section: "patient", type: "number", unit: "years", min: 0, max: 120, step: 1, placeholder: "45" },
   { key: "blood_pressure_systolic", label: "Blood pressure (systolic)", section: "patient", type: "number", unit: "mmHg", min: 50, max: 260, step: 1, placeholder: "130" },
   { key: "blood_pressure_diastolic", label: "Blood pressure (diastolic)", section: "patient", type: "number", unit: "mmHg", min: 30, max: 160, step: 1, placeholder: "80" },
+  { key: "bmi", label: "Body Mass Index (BMI)", section: "patient", type: "number", unit: "kg/m²", min: 10, max: 60, step: 0.1, placeholder: "24.7" },
 
   // ── Blood / kidney tests (18)
   { key: "blood_glucose_random", label: "Random blood glucose level", section: "blood", type: "number", unit: "mg/dL", min: 20, max: 600, step: 1, placeholder: "120" },
@@ -87,10 +88,7 @@ export const FIELDS: CkdField[] = [
   { key: "cholesterol", label: "Cholesterol", section: "blood", type: "number", unit: "mg/dL", min: 50, max: 500, step: 1, placeholder: "190" },
 
   // ── Urine tests (10)
-  { key: "specific_gravity", label: "Specific gravity of urine", section: "urine", type: "select", options: [
-    { label: "1.005", value: "1.005" }, { label: "1.010", value: "1.010" }, { label: "1.015", value: "1.015" },
-    { label: "1.020", value: "1.020" }, { label: "1.025", value: "1.025" },
-  ] },
+  { key: "specific_gravity", label: "Specific gravity of urine", section: "urine", type: "number", min: 1.000, max: 1.035, step: 0.001, placeholder: "1.020" },
   { key: "albumin_in_urine", label: "Albumin in urine", section: "urine", type: "select", options: [
     { label: "0", value: "0" }, { label: "1", value: "1" }, { label: "2", value: "2" },
     { label: "3", value: "3" }, { label: "4", value: "4" }, { label: "5", value: "5" },
@@ -105,12 +103,7 @@ export const FIELDS: CkdField[] = [
   { key: "pus_cells", label: "Pus cells in urine", section: "urine", type: "select", options: normalAbnormal },
   { key: "pus_cell_clumps", label: "Pus cell clumps in urine", section: "urine", type: "select", options: presentNotPresent },
   { key: "bacteria", label: "Bacteria in urine", section: "urine", type: "select", options: presentNotPresent },
-  { key: "urinary_sediment_microscopy", label: "Urinary sediment microscopy", section: "urine", type: "select", options: [
-    { label: "Normal", value: "normal" },
-    { label: "Casts", value: "casts" },
-    { label: "Crystals", value: "crystals" },
-    { label: "Abnormal (other)", value: "abnormal" },
-  ] },
+  { key: "urinary_sediment_microscopy", label: "Urinary sediment microscopy", section: "urine", type: "select", options: normalAbnormal },
 
   // ── Medical history (8)
   { key: "hypertension", label: "Hypertension", section: "history", type: "radio", options: yesNo },
@@ -119,11 +112,7 @@ export const FIELDS: CkdField[] = [
   { key: "duration_of_diabetes", label: "Duration of diabetes mellitus", section: "history", type: "number", unit: "years", min: 0, max: 70, step: 1, placeholder: "0" },
   { key: "duration_of_hypertension", label: "Duration of hypertension", section: "history", type: "number", unit: "years", min: 0, max: 70, step: 1, placeholder: "0" },
   { key: "family_history_ckd", label: "Family history of chronic kidney disease", section: "history", type: "radio", options: yesNo },
-  { key: "smoking_status", label: "Smoking status", section: "history", type: "select", options: [
-    { label: "Never", value: "never" },
-    { label: "Former", value: "former" },
-    { label: "Current", value: "current" },
-  ] },
+  { key: "smoking_status", label: "Smoking status", section: "history", type: "radio", options: yesNo },
   { key: "physical_activity", label: "Physical activity level", section: "history", type: "select", options: [
     { label: "Low", value: "low" },
     { label: "Moderate", value: "moderate" },
@@ -139,7 +128,7 @@ export const FIELDS: CkdField[] = [
   { key: "anemia", label: "Anemia", section: "other", type: "radio", options: yesNo },
 ];
 
-export const FIELD_COUNT = FIELDS.length; // 42
+export const FIELD_COUNT = FIELDS.length; // 43 (BMI added — was missing from the trained model's feature set)
 
 export type FormValues = Record<string, string>;
 
