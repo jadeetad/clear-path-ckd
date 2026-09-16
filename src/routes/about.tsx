@@ -53,7 +53,7 @@ function About() {
           A machine-learning study of chronic kidney disease staging.
         </h1>
 
-        <div className="mt-8 rounded-3xl bg-card/50 p-6 shadow-[0_20px_60px_-24px_oklch(0.376_0.058_204.6/0.4)] ring-1 ring-card/60 backdrop-blur-2xl sm:p-8">
+        <div className="mt-8 rounded-3xl bg-card/50 p-6 shadow-[0_20px_60px_-24px_oklch(0.4_0.09_258/0.4)] ring-1 ring-card/60 backdrop-blur-2xl sm:p-8">
           <div className="grid gap-4 sm:grid-cols-2">
             <Card title="Problem addressed">
               Chronic kidney disease often progresses silently until function is
