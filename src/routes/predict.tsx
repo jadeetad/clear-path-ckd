@@ -102,7 +102,11 @@ function Field({
           ))}
         </div>
       ) : (
-        <Select value={value || undefined} onValueChange={(v) => onChange(v)}>
+        <Select
+          {...(value ? { value } : {})}
+          onValueChange={(v) => onChange(v)}
+        >
+
           <SelectTrigger
             id={field.key}
             aria-invalid={!!error}
