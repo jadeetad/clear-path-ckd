@@ -56,7 +56,7 @@ const normalAbnormal = [
 ];
 
 const presentNotPresent = [
-  { label: "Not present", value: "notpresent" },
+  { label: "Not present", value: "not present" },
   { label: "Present", value: "present" },
 ];
 
